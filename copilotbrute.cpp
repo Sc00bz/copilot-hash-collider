@@ -48,31 +48,38 @@ void earlyExitBruteForce(uint32_t hash, int len)
 	// Brute force
 	do
 	{
-		uint32_t hash0 = obfuscateWord(word, len - 4);
+		uint32_t hash0 = 33 * obfuscateWord(word, len - 5);
 		if (earlyExit(hash0, hash, 33*33*33*33) == 0)
 		{
-			uint32_t hash1 = 33 * hash0;
-			for (unsigned char c1 = 'a'; c1 <= 'z'; c1++)
+			for (unsigned char c0 = 'a'; c0 <= 'z'; c0++)
 			{
-				if (earlyExit(hash1 ^ c1, hash, 33*33*33) == 0)
+				if (earlyExit(33 * (hash0 ^ c0), hash, 33*33*33) == 0)
 				{
-					uint32_t hash2 = 33 * (hash1 ^ c1);
-					for (unsigned char c2 = 'a'; c2 <= 'z'; c2++)
+					uint32_t hash1 = 33 * (hash0 ^ c0);
+					for (unsigned char c1 = 'a'; c1 <= 'z'; c1++)
 					{
-						if (earlyExit(hash2 ^ c2, hash, 33*33) == 0)
+						if (earlyExit(33 * (hash1 ^ c1), hash, 33*33) == 0)
 						{
-							uint32_t hash3 = 33 * (hash2 ^ c2);
-							for (unsigned char c3 = 'a'; c3 <= 'z'; c3++)
+							uint32_t hash2 = 33 * (hash1 ^ c1);
+							for (unsigned char c2 = 'a'; c2 <= 'z'; c2++)
 							{
-								uint32_t c4 = (33 * (hash3 ^ c3)) ^ hash;
-								if (c4 >= 'a' && c4 <= 'z')
+								if (earlyExit(33 * (hash2 ^ c2), hash, 33) == 0)
 								{
-									word[len - 4] = c1;
-									word[len - 3] = c2;
-									word[len - 2] = c3;
-									word[len - 1] = (unsigned char) c4;
-									printf("%s\n", word);
-									g_count++;
+									uint32_t hash3 = 33 * (hash2 ^ c2);
+									for (unsigned char c3 = 'a'; c3 <= 'z'; c3++)
+									{
+										uint32_t c4 = (33 * (hash3 ^ c3)) ^ hash;
+										if (c4 >= 'a' && c4 <= 'z')
+										{
+											word[len - 5] = c0;
+											word[len - 4] = c1;
+											word[len - 3] = c2;
+											word[len - 2] = c3;
+											word[len - 1] = (unsigned char) c4;
+											printf("%s\n", word);
+											g_count++;
+										}
+									}
 								}
 							}
 						}
@@ -82,7 +89,7 @@ void earlyExitBruteForce(uint32_t hash, int len)
 		}
 
 		// Next
-		for (i = 0; i < len - 4; i++)
+		for (i = 0; i < len - 5; i++)
 		{
 			word[i]++;
 			if (word[i] <= 'z')
@@ -91,11 +98,11 @@ void earlyExitBruteForce(uint32_t hash, int len)
 			}
 			word[i] = 'a';
 		}
-		if (i >= len - 5)
+		if (i >= len - 6)
 		{
 			fprintf(stderr, "*");
 		}
-	} while (i < len - 4);
+	} while (i < len - 5);
 }
 
 int main(int argc, char *argv[])
@@ -115,9 +122,9 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Usage is:\n%s target-hash length\n%s string-to-hash\n", argv[0], argv[0]);
 		return 1;
 	}
-	if (len < 4 || len > MAX_LEN)
+	if (len < 5 || len > MAX_LEN)
 	{
-		fprintf(stderr, "Bad length (4 to %u): %u\n", MAX_LEN, len);
+		fprintf(stderr, "Bad length (5 to %u): %u\n", MAX_LEN, len);
 		return 1;
 	}
 
