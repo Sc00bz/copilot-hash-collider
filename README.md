@@ -17,7 +17,7 @@ Used to find collisions in the copilot's hash function. This uses a meet in the 
 
 ## Meet in the middle attack
 
-`prefix-length` should be at least 4, otherwise use early exit brute force. `suffix-length` should be at least `prefix-length - 1`.
+`prefix-length` should be at least 6, otherwise use early exit brute force. `suffix-length` should be at least `prefix-length - 1`.
 ```
 ./copilotcollider target-hash prefix-length suffix-length
 ```
@@ -33,7 +33,7 @@ This will take about a minute, use about 620 MiB of memory, and should find 8546
 
 ## Early exit brute force
 
-This should be about as fast or faster than meet in the middle attack when `prefix-length` is less than 5.
+This should be about as fast or faster than meet in the middle attack when `prefix-length` is less than 12.
 ```
 ./copilotbrute target-hash length
 ```
@@ -41,7 +41,7 @@ This should be about as fast or faster than meet in the middle attack when `pref
 
 ### Example
 
-This will take about 3 minutes and should find 854673 collisions.
+This will take about 10 seconds and should find 854673 collisions.
 ```
 ./copilotbrute 69712246 11 > out.txt
 ```
